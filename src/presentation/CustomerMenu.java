@@ -1,0 +1,139 @@
+package presentation;
+
+import model.order.OrderDetail;
+import model.people.User;
+import model.restaurant.Dish;
+import service.DishService;
+import service.OrderService;
+import service.ReviewService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class CustomerMenu {
+    private Scanner scanner;
+    private User currentUser;
+    private DishService dishService;
+    private OrderService orderService;
+    private ReviewService reviewService;
+
+    public CustomerMenu(Scanner scanner, User currentUser) {
+        this.scanner = scanner;
+        this.currentUser = currentUser;
+        this.dishService = new DishService();
+        this.orderService = new OrderService();
+        this.reviewService = new ReviewService();
+    }
+
+    public void start() {
+        while (true) {
+            System.out.println("\n=== DÀNH CHO KHÁCH HÀNG ===");
+            System.out.println("Xin chào, " + currentUser.getUsername() + "!");
+            System.out.println("1. Xem thực đơn");
+            System.out.println("2. Đặt món (Tạo Order)");
+            System.out.println("3. Viết đánh giá (Review)");
+            System.out.println("0. Đăng xuất");
+            System.out.print("Mời bạn chọn: ");
+
+            String choice = scanner.nextLine();
+            switch (choice) {
+                case "1":
+                    displayMenu();
+                    break;
+                case "2":
+                    orderFood();
+                    break;
+                case "3":
+                    leaveReview();
+                    break;
+                case "0":
+                    System.out.println("Đang đăng xuất...");
+                    return;
+                default:
+                    System.err.println("Lựa chọn không hợp lệ!");
+            }
+        }
+    }
+
+    private void displayMenu() {
+        System.out.println("\n--- THỰC ĐƠN NHÀ HÀNG ---");
+        List<Dish> dishes = dishService.getAllDishes();
+        if (dishes.isEmpty()) {
+            System.out.println("Thực đơn đang cập nhật!");
+            return;
+        }
+        System.out.printf("%-5s | %-20s | %-10s\n", "ID", "Tên món", "Giá ($)");
+        System.out.println("----------------------------------------");
+        for (Dish d : dishes) {
+            System.out.printf("%-5d | %-20s | %-10.2f\n", d.getId(), d.getName(), d.getPrice());
+        }
+    }
+
+    private void orderFood() {
+        System.out.println("\n--- ĐẶT MÓN ---");
+        try {
+            System.out.print("Bạn đang ngồi ở Bàn số mấy? (Nhập ID Bàn): ");
+            int tableId = Integer.parseInt(scanner.nextLine());
+
+            List<OrderDetail> cart = new ArrayList<>();
+            while (true) {
+                System.out.print("Nhập ID món ăn muốn gọi (Nhập 0 để chốt đơn): ");
+                int dishId = Integer.parseInt(scanner.nextLine());
+
+                if (dishId == 0) break;
+
+                System.out.print("Nhập số lượng: ");
+                int quantity = Integer.parseInt(scanner.nextLine());
+
+                // Chú ý: Ở thực tế, bạn cần gọi DishService để lấy giá (price) chuẩn của món ăn tại đây.
+                // Để code chạy được nhanh, ta tạm gán giá giả định (ví dụ 10.0), bạn hãy nâng cấp thêm nhé!
+                double currentPrice = 10.0;
+
+                OrderDetail detail = new OrderDetail();
+                detail.setDishId(dishId);
+                detail.setQuantity(quantity);
+                detail.setPrice(currentPrice);
+                cart.add(detail);
+                System.out.println("Đã thêm vào giỏ!");
+            }
+
+            if (!cart.isEmpty()) {
+                boolean success = orderService.placeOrder(currentUser.getId(), tableId, cart);
+                if (success) {
+                    System.out.println("✅ Đặt món thành công! Vui lòng đợi đầu bếp chuẩn bị.");
+                } else {
+                    System.err.println("❌ Có lỗi xảy ra khi đặt món.");
+                }
+            } else {
+                System.out.println("Bạn chưa chọn món nào.");
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("❌ Vui lòng nhập số hợp lệ!");
+        }
+    }
+
+    private void leaveReview() {
+        System.out.println("\n--- ĐÁNH GIÁ DỊCH VỤ ---");
+        try {
+            System.out.print("Bạn muốn đánh giá món ăn nào? (Nhập ID món, hoặc bỏ trống nếu đánh giá chung): ");
+            String dishInput = scanner.nextLine();
+            Integer dishId = dishInput.isEmpty() ? null : Integer.parseInt(dishInput);
+
+            System.out.print("Chấm điểm (1-5 sao): ");
+            int rating = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Nhập bình luận của bạn: ");
+            String comment = scanner.nextLine();
+
+            boolean success = reviewService.addReview(currentUser.getId(), dishId, rating, comment);
+            if (success) {
+                System.out.println("✅ Cảm ơn bạn đã đánh giá!");
+            } else {
+                System.err.println("❌ Gửi đánh giá thất bại.");
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("❌ Vui lòng nhập đúng định dạng số!");
+        }
+    }
+}
