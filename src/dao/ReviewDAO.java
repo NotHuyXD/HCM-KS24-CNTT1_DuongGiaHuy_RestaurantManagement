@@ -21,7 +21,6 @@ public class ReviewDAO {
 
             ps.setInt(1, review.getCustomerId());
 
-            // Xử lý Bẫy Dữ Liệu: Nếu dishId là null -> Đánh giá nhà hàng
             if (review.getDishId() != null) {
                 ps.setInt(2, review.getDishId());
             } else {
@@ -39,10 +38,10 @@ public class ReviewDAO {
         return false;
     }
 
-    // 2. Lấy toàn bộ đánh giá (Dành cho Quản lý xem)
+    // 2. Lấy toàn bộ đánh giá
     public List<Review> findAll() {
         List<Review> list = new ArrayList<>();
-        // Sắp xếp giảm dần theo thời gian (Đánh giá mới nhất lên đầu)
+        // Sắp xếp giảm dần theo thời gian
         String sql = "SELECT * FROM reviews ORDER BY created_at DESC";
 
         try (Connection conn = DBConnection.getConnection();
@@ -54,7 +53,6 @@ public class ReviewDAO {
                 review.setId(rs.getInt("id"));
                 review.setCustomerId(rs.getInt("customer_id"));
 
-                // Xử lý đọc dữ liệu NULL từ Database
                 Object dishIdObj = rs.getObject("dish_id");
                 if (dishIdObj != null) {
                     review.setDishId((Integer) dishIdObj);

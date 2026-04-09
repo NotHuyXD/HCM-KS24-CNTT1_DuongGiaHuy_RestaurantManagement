@@ -7,16 +7,15 @@ import model.people.User;
 import java.util.List;
 
 public class UserService {
-    // Service sẽ gọi đến DAO
     private UserDAO userDAO;
 
     public UserService() {
         this.userDAO = new UserDAO();
     }
 
-    // 1. Nghiệp vụ Đăng nhập
+    // 1. Đăng nhập
     public User login(String username, String password) {
-        // Kiểm tra validation cơ bản trước khi chọc xuống DB
+        // Kiểm tra validation
         if (username == null || username.trim().isEmpty()) {
             System.err.println("Tên đăng nhập không được để trống!");
             return null;
@@ -37,7 +36,7 @@ public class UserService {
         return user;
     }
 
-    // 2. Nghiệp vụ Đăng ký tài khoản (Mặc định là Khách hàng)
+    // 2. Đăng ký tài khoản (Mặc định là Khách hàng)
     public boolean register(String username, String password) {
         if (username == null || username.trim().length() < 3) {
             System.err.println("Tên đăng nhập phải có ít nhất 3 ký tự!");
@@ -48,28 +47,27 @@ public class UserService {
             return false;
         }
 
-        // Kiểm tra trùng lặp username bằng cách gọi DAO
+        // Kiểm tra trùng lặp username
         if (userDAO.isUsernameExist(username)) {
             System.err.println("Tên đăng nhập này đã tồn tại. Vui lòng chọn tên khác!");
             return false;
         }
 
-        // Tạo đối tượng User mới
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
-        newUser.setRole(Role.CUSTOMER); // Đăng ký mới mặc định là Khách hàng
-        newUser.setActive(true);        // Mặc định kích hoạt
+        newUser.setRole(Role.CUSTOMER);
+        newUser.setActive(true);
 
         return userDAO.register(newUser);
     }
 
-    // 3. Nghiệp vụ lấy danh sách người dùng (Dành cho Manager)
+    // 3. Lấy danh sách người dùng (Dành cho Manager)
     public List<User> getAllUsers() {
         return userDAO.findAll();
     }
 
-    // 4. Nghiệp vụ Khóa/Mở khóa tài khoản
+    // 4. Khóa/Mở khóa tài khoản
     public boolean changeUserStatus(int userId, boolean newStatus) {
         if (userId <= 0) {
             System.err.println("ID người dùng không hợp lệ!");

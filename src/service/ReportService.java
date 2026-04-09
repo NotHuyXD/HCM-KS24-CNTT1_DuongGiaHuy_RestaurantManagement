@@ -15,7 +15,7 @@ public class ReportService {
     }
 
     public void showTopSellingDishes(int top) {
-        if (top <= 0) top = 5; // Mặc định lấy Top 5
+        if (top <= 0) top = 5;
         reportDAO.printTopSellingDishes(top);
     }
 }

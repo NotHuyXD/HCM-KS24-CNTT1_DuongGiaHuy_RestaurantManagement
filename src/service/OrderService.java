@@ -20,7 +20,7 @@ public class OrderService {
             return false;
         }
 
-        // TÍNH TOÁN NGHIỆP VỤ: Tự động cộng dồn tổng tiền hóa đơn
+        // Tự động cộng dồn tổng tiền hóa đơn
         double totalAmount = 0;
         for (OrderDetail detail : details) {
             if (detail.getQuantity() <= 0) {
@@ -30,17 +30,15 @@ public class OrderService {
             totalAmount += (detail.getPrice() * detail.getQuantity());
         }
 
-        // Khởi tạo đối tượng Order với tổng tiền vừa tính
         Order newOrder = new Order();
         newOrder.setCustomerId(customerId);
         newOrder.setTableId(tableId);
         newOrder.setTotalAmount(totalAmount);
 
-        // Gọi DAO thực thi Transaction "All or Nothing"
         return orderDAO.createOrderWithDetails(newOrder, details);
     }
 
-    // Nghiệp vụ Thanh toán
+    // Thanh toán
     public boolean checkout(int orderId, int tableId) {
         if (orderId <= 0 || tableId <= 0) {
             System.err.println("Thông tin thanh toán không hợp lệ!");
@@ -54,7 +52,7 @@ public class OrderService {
         return orderDAO.findPendingAndCookingDetails();
     }
 
-    // Nghiệp vụ cập nhật trạng thái món ăn
+    // Cập nhật trạng thái món ăn
     public boolean updateDetailStatus(int detailId, String newStatus) {
         if (detailId <= 0) {
             System.err.println("ID chi tiết đơn hàng không hợp lệ!");

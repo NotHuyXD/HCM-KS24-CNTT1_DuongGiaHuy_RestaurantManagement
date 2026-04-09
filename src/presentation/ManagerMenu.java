@@ -36,7 +36,7 @@ public class ManagerMenu {
         }
     }
 
-    // --- CHỨC NĂNG NÂNG CAO: QUẢN LÝ NGƯỜI DÙNG ---
+    // --- QUẢN LÝ NGƯỜI DÙNG ---
     private void manageUsers() {
         System.out.println("\n1. Xem danh sách User | 2. Tạo tài khoản Đầu Bếp | 3. Khóa/Mở khóa User | 0. Quay lại");
         String choice = scanner.nextLine();
@@ -53,9 +53,9 @@ public class ManagerMenu {
                 System.out.print("Nhập Mật khẩu: "); String chefPass = scanner.nextLine();
                 boolean isSuccess=userService.createChef(chefName,chefPass);
                 if(isSuccess){
-                    System.out.println("✅ Đăng ký tài khoản đầu bếp thành công!");
+                    System.out.println("Đăng ký tài khoản đầu bếp thành công!");
                 } else {
-                    System.err.println("❌ Đăng ký thất bại. Vui lòng kiểm tra lại thông tin!");
+                    System.err.println("Đăng ký thất bại. Vui lòng kiểm tra lại thông tin!");
                 }
                 break;
             case "3":
@@ -63,12 +63,12 @@ public class ManagerMenu {
                 int uid = Integer.parseInt(scanner.nextLine());
                 System.out.print("Nhập trạng thái (true = Mở khóa, false = Khóa): ");
                 boolean stt = Boolean.parseBoolean(scanner.nextLine());
-                if (userService.changeUserStatus(uid, stt)) System.out.println("✅ Đã cập nhật trạng thái!");
+                if (userService.changeUserStatus(uid, stt)) System.out.println("Đã cập nhật trạng thái!");
                 break;
         }
     }
 
-    // --- CHỨC NĂNG NÂNG CAO: THỐNG KÊ ---
+    // --- THỐNG KÊ ---
     private void viewReports() {
         System.out.println("\n1. Doanh thu theo tháng | 2. Top món bán chạy | 0. Quay lại");
         String choice = scanner.nextLine();

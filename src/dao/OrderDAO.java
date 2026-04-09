@@ -77,7 +77,6 @@ public class OrderDAO {
             }
             return false;
         } finally {
-            // Đảm bảo trả lại trạng thái mặc định và đóng kết nối
             if (conn != null) {
                 try {
                     conn.setAutoCommit(true);
