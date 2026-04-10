@@ -24,7 +24,7 @@ public class ReviewDAO {
             if (review.getDishId() != null) {
                 ps.setInt(2, review.getDishId());
             } else {
-                ps.setNull(2, Types.INTEGER); // Gửi giá trị NULL chuẩn SQL xuống Database
+                ps.setNull(2, Types.INTEGER);
             }
 
             ps.setInt(3, review.getRating());

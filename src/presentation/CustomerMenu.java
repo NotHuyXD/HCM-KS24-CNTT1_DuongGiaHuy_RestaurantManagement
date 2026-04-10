@@ -2,7 +2,9 @@ package presentation;
 
 import model.order.OrderDetail;
 import model.people.User;
+import model.restaurant.DiningTable;
 import model.restaurant.Dish;
+import service.DiningTableService;
 import service.DishService;
 import service.OrderService;
 import service.ReviewService;
@@ -17,6 +19,7 @@ public class CustomerMenu {
     private DishService dishService;
     private OrderService orderService;
     private ReviewService reviewService;
+    private DiningTableService tableService;
 
     public CustomerMenu(Scanner scanner, User currentUser) {
         this.scanner = scanner;
@@ -24,6 +27,7 @@ public class CustomerMenu {
         this.dishService = new DishService();
         this.orderService = new OrderService();
         this.reviewService = new ReviewService();
+        this.tableService = new DiningTableService();
     }
 
     public void start() {
@@ -76,6 +80,24 @@ public class CustomerMenu {
             System.out.print("Bạn đang ngồi ở Bàn số mấy? (Nhập ID Bàn): ");
             int tableId = Integer.parseInt(scanner.nextLine());
 
+            // ==========================================
+            // LOGIC MỚI: KIỂM TRA BÀN CÓ TỒN TẠI KHÔNG
+            // ==========================================
+            DiningTable table = tableService.getTableById(tableId);
+            if (table == null) {
+                System.err.println("Lỗi: Bàn số " + tableId + " không tồn tại trong nhà hàng!");
+                return; // Kết thúc hàm đặt món, quay lại menu
+            }
+
+            // Bổ sung thêm: Cảnh báo nhẹ nếu bàn đang có người khác ngồi
+            if (table.getStatus().equals("OCCUPIED")) {
+                System.out.println("⚠️ Lưu ý: Bàn này hiện đang được đánh dấu là có khách.");
+                System.out.println("Tiếp tục gọi thêm món cho bàn này...");
+            } else {
+                System.out.println("✅ Xác nhận: Bạn đang gọi món cho " + table.getTableName());
+            }
+            // ==========================================
+
             List<OrderDetail> cart = new ArrayList<>();
             while (true) {
                 System.out.print("Nhập ID món ăn muốn gọi (Nhập 0 để chốt đơn): ");
@@ -86,8 +108,7 @@ public class CustomerMenu {
                 System.out.print("Nhập số lượng: ");
                 int quantity = Integer.parseInt(scanner.nextLine());
 
-                // Chú ý: Ở thực tế, bạn cần gọi DishService để lấy giá (price) chuẩn của món ăn tại đây.
-                // Để code chạy được nhanh, ta tạm gán giá giả định (ví dụ 10.0), bạn hãy nâng cấp thêm nhé!
+                // Chú ý: Cần lấy giá thực tế từ Database
                 double currentPrice = 10.0;
 
                 OrderDetail detail = new OrderDetail();
@@ -101,15 +122,15 @@ public class CustomerMenu {
             if (!cart.isEmpty()) {
                 boolean success = orderService.placeOrder(currentUser.getId(), tableId, cart);
                 if (success) {
-                    System.out.println("✅ Đặt món thành công! Vui lòng đợi đầu bếp chuẩn bị.");
+                    System.out.println("Đặt món thành công! Vui lòng đợi đầu bếp chuẩn bị.");
                 } else {
-                    System.err.println("❌ Có lỗi xảy ra khi đặt món.");
+                    System.err.println("Có lỗi xảy ra khi đặt món.");
                 }
             } else {
                 System.out.println("Bạn chưa chọn món nào.");
             }
         } catch (NumberFormatException e) {
-            System.err.println("❌ Vui lòng nhập số hợp lệ!");
+            System.err.println("Vui lòng nhập số hợp lệ!");
         }
     }
 

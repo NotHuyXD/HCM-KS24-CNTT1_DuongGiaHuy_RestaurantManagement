@@ -86,4 +86,26 @@ public class DiningTableDAO {
             return false;
         }
     }
+
+    // Kiểm tra ID bàn có tồn tại hay ko
+    public DiningTable findById(int id) {
+        String sql = "SELECT * FROM dining_tables WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    DiningTable table = new DiningTable();
+                    table.setId(rs.getInt("id"));
+                    table.setTableName(rs.getString("table_name"));
+                    table.setStatus(rs.getString("status"));
+                    return table;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi kiểm tra bàn: " + e.getMessage());
+        }
+        return null;
+    }
 }

@@ -22,4 +22,9 @@ public class DiningTableService {
     public boolean deleteTable(int id) {
         return tableDAO.delete(id);
     }
+
+    public DiningTable getTableById(int id) {
+        if (id <= 0) return null;
+        return tableDAO.findById(id);
+    }
 }
