@@ -98,12 +98,12 @@ public class ManagerMenu {
                 System.out.print("Giá mới: "); double price = Double.parseDouble(scanner.nextLine());
                 System.out.print("Loại (FOOD/DRINK): "); String type = scanner.nextLine().toUpperCase();
                 int qty = type.equals("DRINK") ? Integer.parseInt(scanner.nextLine()) : 0;
-                if (dishService.updateDish(editId, name, price, qty, type)) System.out.println("✅ Đã cập nhật!");
+                if (dishService.updateDish(editId, name, price, qty, type)) System.out.println("Đã cập nhật!");
                 break;
             case "3":
                 System.out.print("Nhập ID món muốn xóa: ");
                 int delId = Integer.parseInt(scanner.nextLine());
-                if (dishService.removeDish(delId)) System.out.println("✅ Đã xóa!");
+                if (dishService.removeDish(delId)) System.out.println("Đã xóa!");
                 break;
         }
     }
@@ -119,16 +119,16 @@ public class ManagerMenu {
                 break;
             case "2":
                 System.out.print("Tên bàn mới: ");
-                if (tableService.addTable(scanner.nextLine())) System.out.println("✅ Đã thêm bàn!");
+                if (tableService.addTable(scanner.nextLine())) System.out.println("Đã thêm bàn!");
                 break;
             case "3":
                 System.out.print("ID bàn cần sửa: "); int id = Integer.parseInt(scanner.nextLine());
                 System.out.print("Tên mới: ");
-                if (tableService.updateTableName(id, scanner.nextLine())) System.out.println("✅ Đã sửa!");
+                if (tableService.updateTableName(id, scanner.nextLine())) System.out.println("Đã sửa!");
                 break;
             case "4":
                 System.out.print("ID bàn cần xóa: ");
-                if (tableService.deleteTable(Integer.parseInt(scanner.nextLine()))) System.out.println("✅ Đã xóa!");
+                if (tableService.deleteTable(Integer.parseInt(scanner.nextLine()))) System.out.println("Đã xóa!");
                 break;
         }
     }

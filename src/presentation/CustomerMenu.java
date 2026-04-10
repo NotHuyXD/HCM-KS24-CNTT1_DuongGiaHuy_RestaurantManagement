@@ -80,23 +80,19 @@ public class CustomerMenu {
             System.out.print("Bạn đang ngồi ở Bàn số mấy? (Nhập ID Bàn): ");
             int tableId = Integer.parseInt(scanner.nextLine());
 
-            // ==========================================
-            // LOGIC MỚI: KIỂM TRA BÀN CÓ TỒN TẠI KHÔNG
-            // ==========================================
+            // KIỂM TRA BÀN CÓ TỒN TẠI KHÔNG
             DiningTable table = tableService.getTableById(tableId);
             if (table == null) {
                 System.err.println("Lỗi: Bàn số " + tableId + " không tồn tại trong nhà hàng!");
-                return; // Kết thúc hàm đặt món, quay lại menu
+                return;
             }
 
-            // Bổ sung thêm: Cảnh báo nhẹ nếu bàn đang có người khác ngồi
             if (table.getStatus().equals("OCCUPIED")) {
-                System.out.println("⚠️ Lưu ý: Bàn này hiện đang được đánh dấu là có khách.");
+                System.out.println("Lưu ý: Bàn này hiện đang được đánh dấu là có khách.");
                 System.out.println("Tiếp tục gọi thêm món cho bàn này...");
             } else {
-                System.out.println("✅ Xác nhận: Bạn đang gọi món cho " + table.getTableName());
+                System.out.println("Xác nhận: Bạn đang gọi món cho " + table.getTableName());
             }
-            // ==========================================
 
             List<OrderDetail> cart = new ArrayList<>();
             while (true) {
@@ -107,8 +103,6 @@ public class CustomerMenu {
 
                 System.out.print("Nhập số lượng: ");
                 int quantity = Integer.parseInt(scanner.nextLine());
-
-                // Chú ý: Cần lấy giá thực tế từ Database
                 double currentPrice = 10.0;
 
                 OrderDetail detail = new OrderDetail();
@@ -149,12 +143,12 @@ public class CustomerMenu {
 
             boolean success = reviewService.addReview(currentUser.getId(), dishId, rating, comment);
             if (success) {
-                System.out.println("✅ Cảm ơn bạn đã đánh giá!");
+                System.out.println("Cảm ơn bạn đã đánh giá!");
             } else {
-                System.err.println("❌ Gửi đánh giá thất bại.");
+                System.err.println("Gửi đánh giá thất bại.");
             }
         } catch (NumberFormatException e) {
-            System.err.println("❌ Vui lòng nhập đúng định dạng số!");
+            System.err.println("Vui lòng nhập đúng định dạng số!");
         }
     }
 }

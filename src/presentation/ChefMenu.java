@@ -86,13 +86,13 @@ public class ChefMenu {
 
             boolean isSuccess = orderService.updateDetailStatus(detailId, newStatus);
             if (isSuccess) {
-                System.out.println("✅ Đã cập nhật trạng thái món ăn thành: " + newStatus);
+                System.out.println("Đã cập nhật trạng thái món ăn thành: " + newStatus);
             } else {
-                System.err.println("❌ Cập nhật thất bại. Vui lòng kiểm tra lại Detail ID.");
+                System.err.println("Cập nhật thất bại. Vui lòng kiểm tra lại Detail ID.");
             }
 
         } catch (NumberFormatException e) {
-            System.err.println("❌ Vui lòng nhập số hợp lệ!");
+            System.err.println("Vui lòng nhập số hợp lệ!");
         }
     }
 }

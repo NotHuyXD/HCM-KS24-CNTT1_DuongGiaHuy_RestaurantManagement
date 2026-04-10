@@ -49,7 +49,7 @@ public class AuthMenu {
         User loginUser = userService.login(username, password);
 
         if (loginUser != null) {
-            System.out.println("\n✅ Đăng nhập thành công! Chào mừng " + loginUser.getUsername());
+            System.out.println("\nĐăng nhập thành công! Chào mừng " + loginUser.getUsername());
 
             // ĐIỀU HƯỚNG DỰA TRÊN ROLE
             if (loginUser.getRole() == Role.MANAGER) {
@@ -62,7 +62,7 @@ public class AuthMenu {
                 new ChefMenu(scanner, loginUser).start();
             }
         } else {
-            System.err.println("❌ Sai tên đăng nhập hoặc mật khẩu!");
+            System.err.println("Sai tên đăng nhập hoặc mật khẩu!");
         }
     }
 
@@ -75,9 +75,9 @@ public class AuthMenu {
 
         boolean isSuccess = userService.register(username, password);
         if (isSuccess) {
-            System.out.println("✅ Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
+            System.out.println("Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
         } else {
-            System.err.println("❌ Đăng ký thất bại. Vui lòng kiểm tra lại thông tin!");
+            System.err.println("Đăng ký thất bại. Vui lòng kiểm tra lại thông tin!");
         }
     }
 }
