@@ -20,7 +20,6 @@ public class OrderService {
             return false;
         }
 
-        // Tự động cộng dồn tổng tiền hóa đơn
         double totalAmount = 0;
         for (OrderDetail detail : details) {
             if (detail.getQuantity() <= 0) {
