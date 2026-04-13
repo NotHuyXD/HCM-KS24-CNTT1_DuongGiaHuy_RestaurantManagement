@@ -37,6 +37,7 @@ public class CustomerMenu {
             System.out.println("1. Xem thực đơn");
             System.out.println("2. Đặt món (Tạo Order)");
             System.out.println("3. Viết đánh giá (Review)");
+            System.out.println("4. Xem tất cả đánh giá của nhà hàng");
             System.out.println("0. Đăng xuất");
             System.out.print("Mời bạn chọn: ");
 
@@ -50,6 +51,9 @@ public class CustomerMenu {
                     break;
                 case "3":
                     leaveReview();
+                    break;
+                case "4":
+                    viewReviews();
                     break;
                 case "0":
                     System.out.println("Đang đăng xuất...");
@@ -149,6 +153,49 @@ public class CustomerMenu {
             }
         } catch (NumberFormatException e) {
             System.err.println("Vui lòng nhập đúng định dạng số!");
+        }
+    }
+
+    // --- XEM ĐÁNH GIÁ ---
+    private void viewReviews() {
+        System.out.println("\n--- NHỮNG LỜI NHẬN XÉT TỪ THỰC KHÁCH ---");
+        System.out.println("1. Xem tất cả đánh giá");
+        System.out.println("2. Xem đánh giá theo món ăn cụ thể");
+        System.out.print("Lựa chọn của bạn: ");
+        String choice = scanner.nextLine();
+
+        java.util.List<model.feedback.Review> reviews = new java.util.ArrayList<>();
+
+        if (choice.equals("1")) {
+            reviews = reviewService.getAllReviews();
+        } else if (choice.equals("2")) {
+            System.out.print("Nhập ID món ăn bạn muốn xem đánh giá: ");
+            try {
+                int dishId = Integer.parseInt(scanner.nextLine());
+                reviews = reviewService.getReviewsByDish(dishId);
+            } catch (NumberFormatException e) {
+                System.err.println("ID món ăn phải là một số nguyên!");
+                return;
+            }
+        } else {
+            System.err.println("Lựa chọn không hợp lệ!");
+            return;
+        }
+
+        if (reviews.isEmpty()) {
+            System.out.println("Chưa có đánh giá nào ở mục này.");
+            return;
+        }
+
+        System.out.printf("%-5s | %-10s | %-5s | %-40s | %-20s\n", "ID", "Món (ID)", "Sao", "Bình luận", "Ngày đăng");
+        System.out.println("-----------------------------------------------------------------------------------------");
+        for (model.feedback.Review r : reviews) {
+            String dishInfo = (r.getDishId() == null) ? "Chung" : String.valueOf(r.getDishId());
+
+            String time = r.getCreatedAt().toString().substring(0, 16).replace("T", " ");
+
+            System.out.printf("%-5d | %-10s | %-5d | %-40s | %-20s\n",
+                    r.getId(), dishInfo, r.getRating(), r.getComment(), time);
         }
     }
 }
