@@ -3,10 +3,13 @@ package presentation;
 import model.people.Role;
 import model.people.User;
 import model.restaurant.DiningTable;
+import model.restaurant.Dish;
 import service.DiningTableService;
 import service.DishService;
 import service.ReportService;
 import service.UserService;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class ManagerMenu {
@@ -91,6 +94,19 @@ public class ManagerMenu {
         System.out.println("\n1. Xem thực đơn | 2. Sửa món | 3. Xóa món | 4. Thêm món | 0. Quay lại");
         String choice = scanner.nextLine();
         switch (choice) {
+            case "1":
+                System.out.println("\n--- THỰC ĐƠN NHÀ HÀNG ---");
+                List<Dish> dishes = dishService.getAllDishes();
+                if (dishes.isEmpty()) {
+                    System.out.println("Thực đơn đang cập nhật!");
+                    break;
+                }
+                System.out.printf("%-5s | %-20s | %-10s\n", "ID", "Tên món", "Giá ($)");
+                System.out.println("----------------------------------------");
+                for (Dish d : dishes) {
+                    System.out.printf("%-5d | %-20s | %-10.2f\n", d.getId(), d.getName(), d.getPrice());
+                }
+                break;
             case "2":
                 System.out.print("Nhập ID món muốn sửa: ");
                 int editId = Integer.parseInt(scanner.nextLine());
@@ -104,6 +120,13 @@ public class ManagerMenu {
                 System.out.print("Nhập ID món muốn xóa: ");
                 int delId = Integer.parseInt(scanner.nextLine());
                 if (dishService.removeDish(delId)) System.out.println("Đã xóa!");
+                break;
+            case "4":
+                System.out.print("Tên món: "); String dishName = scanner.nextLine();
+                System.out.print("Giá món: "); double dishPrice = Double.parseDouble(scanner.nextLine());
+                System.out.print("Loại (FOOD/DRINK): "); String dishType = scanner.nextLine().toUpperCase();
+                int dishQty = dishType.equals("DRINK") ? Integer.parseInt(scanner.nextLine()) : 0;
+                if (dishService.addNewDish(dishName, dishPrice, dishQty, dishType)) System.out.println("Đã thêm món mới!");
                 break;
         }
     }

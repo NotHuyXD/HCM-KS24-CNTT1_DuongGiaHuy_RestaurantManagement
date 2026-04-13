@@ -3,10 +3,7 @@ package dao;
 import model.restaurant.Dish;
 import util.DBConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +12,26 @@ public class DishDAO {
     // Thêm món mới vào thực đơn
     public boolean insert(Dish dish) {
         String sql = "INSERT INTO dishes (name, price, quantity, type) VALUES (?, ?, ?, ?)";
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, dish.getName());
             ps.setDouble(2, dish.getPrice());
             ps.setInt(3, dish.getQuantity());
             ps.setString(4, dish.getType());
 
-            return ps.executeUpdate() > 0;
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                try (ResultSet rsKeys = ps.getGeneratedKeys()) {
+                    if (rsKeys.next()) {
+                        int realId = rsKeys.getInt(1);
+                        dish.setId(realId);
+                    }
+                }
+                return true;
+            }
         } catch (SQLException e) {
             System.err.println("Lỗi thêm món ăn: " + e.getMessage());
         }
